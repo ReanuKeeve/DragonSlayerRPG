@@ -1,6 +1,6 @@
 let xp = 0;
 let health = 100;
-let gold = 500;
+let gold = 50;
 let currentWeapon = 0;
 let fighting;
 let monsterHealth;
@@ -20,7 +20,8 @@ const weapons = [
   { name: 'stick', power: 5 },
   { name: 'dagger', power: 30 },
   { name: 'claw hammer', power: 50 },
-  { name: 'sword', power: 100 }
+  { name: 'sword', power: 100 },
+  { name: 'glock 17', power: 200 }
 ];
 const monsters = [
   {
@@ -37,7 +38,18 @@ const monsters = [
     name: "dragon",
     level: 20,
     health: 300
+  },
+  {
+    name: "wolf",
+    level: 5,
+    health: 100
+  }, 
+  {
+    name: "mimic",
+    level: 15,
+    health: 100
   }
+
 ]
 const locations = [
   {
@@ -54,8 +66,8 @@ const locations = [
   },
   {
     name: "cave",
-    "button text": ["Fight slime", "Fight fanged beast", "Go to town square"],
-    "button functions": [fightSlime, fightBeast, goTown],
+    "button text": ["Fight slime", "Fight fanged beast", "Fight wolf", "Go to town square"],
+    "button functions": [fightSlime, fightBeast, fightWolf, goTown],
     text: "You enter the cave. You see some monsters."
   },
   {
@@ -89,10 +101,33 @@ const locations = [
     text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!"
   },
   {
-    name: "New game plus",
-    "button text": ["Go to town square", "Explore forest", "Explore cave"],
-    "button functions": [goTown1, goForest, goCavern],
+    name: "new game plus",
+    "button text": ["Go out", "Explore", "New quest!"],
+    "button functions": [goTown1, goTown1, goTown1],
     text: "You were hit while slaying the dragon, and now you can't remember any fight at all. You wake at the local inn, surrounded by doctors. They look quite happy seeing you awake. They told you, that after destroing dragon, they heard a distant cry in the forest and suggest you to explore the source of the sound." 
+  },
+  {
+    name: "town",
+    "button text": ["Go to town square", "Go to outskirts", "Leave town"],
+    "button functions": [goTownSquare, goOutakirts, leaveTown],
+    text: "It's been told, that dragon destroyed wall between town and outskirts. Where are we going?"
+  },
+  {
+    name: "chest",
+    "button text": ["Open chest", "Leave it", "Go back to town"],
+    "button functions": [openChest, goCave, goTown],
+    text: "You see a chest, surrounded by blood and gold. Would you open it?"
+  },
+  {
+    name: "chest is opened",
+    "button text": ["Go deeper", "Go deeper", "Go back to town"],
+    "button functions": [goCave, goCave, goTown],
+    text: "You open a chest and find there some gold! What would you do next?"
+  }, {
+    name: "trap", 
+    "button text": ["Fight", "Fight", "Fight"],
+    "button functions": [fightMimic, fightMimic, fightMimic],
+    text: "You open the chest only to find blood stained mouth of a creature. As soon as you realise that it was a mimic, hands appear behind you and push you into monster's mouth. You have no choice but fight it now."
   }
 ];
 
@@ -104,12 +139,15 @@ button4.onclick = newGamePlus;
 
 function update(location) {
   monsterStats.style.display = "none";
+  button4.style.display = "none";
   button1.innerText = location["button text"][0];
   button2.innerText = location["button text"][1];
   button3.innerText = location["button text"][2];
+  button4.innerText = location["button text"] [3];
   button1.onclick = location["button functions"][0];
   button2.onclick = location["button functions"][1];
   button3.onclick = location["button functions"][2];
+  button4.onclick = location["button functions"][3];
   text.innerHTML = location.text;
 }
 
@@ -122,7 +160,33 @@ function goStore() {
 }
 
 function goCave() {
-  update(locations[2]);
+  if (Math.random() <= .1) {
+    update(locations[2]);
+    button4.style.display = "block";
+  } else {  
+    update(locations[10]);}
+
+}
+
+function openChest() {
+  if (Math.random() < 0.3 && health >= 100) {
+    gold += Math.floor(Math.random() + 1 * 15);
+    goldText.innerText = gold;
+    health -= Math.floor(Math.random() * 10);
+    healthText.innerText = health;
+    update(locations[11]);
+    text.innerText += "You've hurt your back when you opened chest. Ouch..."
+  } else if (Math.random() > 0.2 && gold > 100) {
+    update(locations[12]);
+  }
+
+   
+  else {
+    update(locations[11]);
+  gold += Math.floor(Math.random() + 1  * 10 );
+  goldText.innerText = gold;
+  }
+  
 }
 
 function buyHealth() {
@@ -180,6 +244,18 @@ function fightBeast() {
 
 function fightDragon() {
   fighting = 2;
+  goFight();
+}
+
+function fightWolf() {
+  fighting = 3;
+  goFight();
+}
+
+function fightMimic() {
+  fighting = 4;
+  health -= 50;
+  healthText.innerText = health;
   goFight();
 }
 
@@ -294,6 +370,9 @@ function pick(guess) {
   }
 }
 
+//Setup NG+
+
+
 function newGamePlus() {
   update(locations[8]);
 }
@@ -308,4 +387,20 @@ function goForest() {
 
 function goCavern() {
   update(locations[11])
+}
+
+function goInn() {
+  update(locations[12])
+}
+
+function goTownSquare() {
+  update(locations[13])
+}
+
+function goOutakirts() {
+  update(locations[14])
+}
+
+function leaveTown() {
+  update(locations[15])
 }
