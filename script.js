@@ -169,14 +169,14 @@ function goCave() {
 }
 
 function openChest() {
-  if (Math.random() < 0.3 && health >= 100) {
+  if (Math.random() < 0.2 && health >= 100) {
     gold += Math.floor(Math.random() + 1 * 15);
     goldText.innerText = gold;
     health -= Math.floor(Math.random() * 10);
     healthText.innerText = health;
     update(locations[11]);
     text.innerText += "You've hurt your back when you opened chest. Ouch..."
-  } else if (Math.random() > 0.2 && gold > 100) {
+  } else if (Math.random() < 0.2 && gold > 100) {
     update(locations[12]);
   }
 
@@ -386,19 +386,19 @@ function goForest() {
 }
 
 function goCavern() {
-  update(locations[11])
-}
-
-function goInn() {
-  update(locations[12])
-}
-
-function goTownSquare() {
   update(locations[13])
 }
 
-function goOutakirts() {
+function goInn() {
   update(locations[14])
+}
+
+function goTownSquare() {
+  update(locations[15])
+}
+
+function goOutakirts() {
+  update(locations[16])
 }
 
 function leaveTown() {
